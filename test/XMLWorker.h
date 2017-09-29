@@ -13,7 +13,6 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 using std::ios_base;
-using std::cin;
 using std::cout;
 using std::endl;
 

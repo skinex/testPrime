@@ -13,9 +13,5 @@
       <low> 900</low>
       <high> 1100</high>
     </interval>
-	<interval>
-      <low> 1500</low>
-      <high> 1608</high>
-    </interval>
 </intervals>
- </root>
+</root>
