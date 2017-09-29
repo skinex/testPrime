@@ -5,6 +5,8 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <thread>
+#include <mutex>
 
 
 using std::string;
@@ -28,7 +30,7 @@ struct Interval
 	}
 };
 
-//Class XMLWorker its a solution class
+//Class XMLWorker its a solution class using Singletone pattern
 class XMLWorker
 {
 private:
@@ -41,12 +43,15 @@ private:
 	vector<string> highs; //Vector of highs data
 	list<int> primeNumbers; //List of primeNumbers
 	int count; // count of intervals
+	static XMLWorker *set_instance;
+	XMLWorker(); //private constructor for a singletone pattern
 	bool checkPrimeNumber(int _number); //checking prime numbers
+	void getIntervals(); 
 public:
-	XMLWorker();
-	XMLWorker(string _path);
+	//XMLWorker(string _path);
+	static XMLWorker *get_instance();
 	void loadXmlFromFile(string _path);
-	void getIntervals();
+	void getIntervalsInThread();
 	void calculatePrimeNumbers();
 	void saveXmlToSourceFile();
 	~XMLWorker();

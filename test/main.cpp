@@ -1,14 +1,16 @@
 #include "XMLWorker.h"
 
+XMLWorker *XMLWorker::set_instance = 0;
+
 int main()
 {
+	std::thread intervalThread;
 	try
 	{
-		XMLWorker *xmlWorker = new XMLWorker();
-		xmlWorker->loadXmlFromFile("scene.xml");
-		xmlWorker->getIntervals();
-		xmlWorker->calculatePrimeNumbers();
-		xmlWorker->saveXmlToSourceFile();
+		XMLWorker::get_instance()->loadXmlFromFile("scene.xml");
+		XMLWorker::get_instance()->getIntervalsInThread();
+		XMLWorker::get_instance()->calculatePrimeNumbers();
+		XMLWorker::get_instance()->saveXmlToSourceFile();
 	}
 	catch (std::exception &e)
 	{

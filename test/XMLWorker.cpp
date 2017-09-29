@@ -2,6 +2,10 @@
 
 bool XMLWorker::checkPrimeNumber(int _number)
 {
+	if (_number == 0 || _number == 1)
+	{
+		return false;
+	}
 	bool res = true;
 	for (int i = 2; i < _number / 2; i++)
 	{
@@ -17,9 +21,13 @@ XMLWorker::XMLWorker() : count(0)
 {
 }
 
-XMLWorker::XMLWorker(string _path) : pathSourceXmlFile(_path), count(0)
+XMLWorker * XMLWorker::get_instance()
 {
-	loadXmlFromFile(_path);
+	if (!set_instance)
+	{
+		set_instance = new XMLWorker;
+	}
+	return set_instance;
 }
 
 void XMLWorker::loadXmlFromFile(string _path)
@@ -76,6 +84,12 @@ void XMLWorker::getIntervals()
 	{
 		myInterval.emplace_back(std::stoi(lows[i]), std::stoi(highs[i]));
 	}
+}
+
+void XMLWorker::getIntervalsInThread()
+{
+	std::thread intervalThread(&XMLWorker::getIntervals, this);
+	intervalThread.join();
 }
 
 void XMLWorker::calculatePrimeNumbers()
