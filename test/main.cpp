@@ -4,7 +4,6 @@ XMLWorker *XMLWorker::set_instance = 0;
 
 int main()
 {
-	std::thread intervalThread;
 	try
 	{
 		XMLWorker::get_instance()->loadXmlFromFile("scene.xml");
