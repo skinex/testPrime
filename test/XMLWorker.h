@@ -6,8 +6,6 @@
 #include <string>
 #include <algorithm>
 #include <thread>
-#include <mutex>
-
 
 using std::string;
 using std::list;
