@@ -109,7 +109,7 @@ void XMLWorker::calculatePrimeNumbers()
 
 void XMLWorker::saveXmlToSourceFile()
 {
-	ofstream out("scene.xml", ios_base::out | ios_base::trunc);
+	ofstream out(pathSourceXmlFile, ios_base::out | ios_base::trunc);
 	myXml.insert(myXml.length() - 9, "\n <primes>");
 	for (auto it = primeNumbers.begin(); it != primeNumbers.end(); it++)
 	{
