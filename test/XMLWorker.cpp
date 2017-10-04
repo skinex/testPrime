@@ -2,94 +2,77 @@
 
 bool XMLWorker::checkPrimeNumber(int _number)
 {
-	if (_number == 0 || _number == 1)
-	{
-		return false;
-	}
-	bool res = true;
-	for (int i = 2; i < _number / 2; i++)
-	{
-		if (_number % i == 0)
-		{
-			res = false;
-		}
-	}
-	return res;
+	int i;
+	if (_number == 2)
+		return 1;
+	if (_number == 0 ||_number == 1 || _number % 2 == 0)
+		return 0;
+	for (i = 3; i*i <= _number && _number % i; i += 2)
+		;
+	return i*i > _number;
 }
 
-XMLWorker::XMLWorker() : count(0)
+XMLWorker::XMLWorker()
 {
+	load.setXmlFile("scene.xml");
+	myXml = load.getXmlFile();
 }
 
 XMLWorker * XMLWorker::get_instance()
 {
-	if (!set_instance)
+	if (!instance)
 	{
-		set_instance = new XMLWorker;
+		instance = new XMLWorker;
 	}
-	return set_instance;
+	return instance;
 }
 
-void XMLWorker::loadXmlFromFile(string _path)
+void XMLWorker::parseXmlFile(string _tag, vector<string>& _buffer)
 {
-	pathSourceXmlFile = _path;
-	ifstream in(_path, ios_base::in);
-	std::getline(in, myXml, '\0');
-	in.close();
+	size_t posBegin = 0;
+	size_t posEnd = 0;
+	string openTag = "<" + _tag;
+	string closeTag = "</" + _tag + ">";
+
+	while (true)
+	{
+		posBegin = myXml.find(openTag, posBegin); //find open tag in xml file
+		if (posBegin == string::npos)
+		{
+			break;
+		}
+		posBegin += openTag.length();
+		posBegin = myXml.find(">", posBegin);
+		
+		if (posBegin == string::npos)
+		{
+			cout << "Close tag not found" << endl;
+			exit(-2);
+		}
+
+		posBegin++;
+		
+		posEnd = myXml.find(closeTag, posBegin); //find close tag in xml file
+		if (posEnd == string::npos)
+		{
+			cout << "Close tag not found" << endl;
+			exit(-1);
+		}
+		string value = myXml.substr(posBegin, posEnd - posBegin); //get value this tag
+		value.erase(remove_if(value.begin(), value.end(), isspace), value.end()); //remove spaces from string
+		_buffer.push_back(value);
+		posBegin = posEnd;
+	}
 }
 
 void XMLWorker::getIntervals()
 {
-	//Get Count Low Intervals
-	size_t nPos = myXml.find("low", 0); // fist occurrence of low
-	lowLocate.push_back(nPos);
-	while (nPos < string::npos)
-	{
-		nPos = myXml.find("low", nPos + 4);
-		if (nPos != string::npos)
-		{
-			lowLocate.push_back(nPos);
-		}
-		count++; //Its a count of all intervals / 2
-	}
-	//Get Count High Intervalse
-	size_t nPosH = myXml.find("high", 0); // fist occurrence of high
-	highLocate.push_back(nPosH);
-	while (nPosH < string::npos)
-	{
-		nPosH = myXml.find("high", nPosH + 5);
-		if (nPosH != string::npos)
-		{
-			highLocate.push_back(nPosH);
-		}
-	}
-	//Input data intervals in vectors
-	for (int i = 0; i < count; i++)
-	{
-		if ((i + 1) % 2 == 0)
-		{
-			continue;
-		}
-		lows.push_back(myXml.substr(lowLocate[i] + 4, lowLocate[i + 1] - lowLocate[i] - 6));
-		highs.push_back(myXml.substr(highLocate[i] + 5, highLocate[i + 1] - highLocate[i] - 7));
-	}
-	//Remove spaces in data
-	for (int i = 0; i < lows.size(); i++)
-	{
-		lows[i].erase(remove_if(lows[i].begin(), lows[i].end(), isspace), lows[i].end());
-		highs[i].erase(remove_if(highs[i].begin(), highs[i].end(), isspace), highs[i].end());
-	}
-	//Put intervals in vector of Interval
+	parseXmlFile("low", lows);
+	parseXmlFile("high", highs);
 	for (int i = 0; i < lows.size(); i++)
 	{
 		myInterval.emplace_back(std::stoi(lows[i]), std::stoi(highs[i]));
 	}
-}
-
-void XMLWorker::getIntervalsInThread()
-{
-	std::thread intervalThread(&XMLWorker::getIntervals, this);
-	intervalThread.join();
 }
 
 void XMLWorker::calculatePrimeNumbers()
@@ -109,7 +92,7 @@ void XMLWorker::calculatePrimeNumbers()
 
 void XMLWorker::saveXmlToSourceFile()
 {
-	ofstream out(pathSourceXmlFile, ios_base::out | ios_base::trunc);
+	ofstream out(load.getPathSourceXmlFile(), ios_base::out | ios_base::trunc);
 	myXml.insert(myXml.length() - 9, "\n <primes>");
 	for (auto it = primeNumbers.begin(); it != primeNumbers.end(); it++)
 	{
@@ -122,4 +105,5 @@ void XMLWorker::saveXmlToSourceFile()
 
 XMLWorker::~XMLWorker()
 {
+	delete instance;
 }

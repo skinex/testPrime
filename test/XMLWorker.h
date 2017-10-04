@@ -1,20 +1,5 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <list>
-#include <fstream>
-#include <string>
-#include <algorithm>
-#include <thread>
-
-using std::string;
-using std::list;
-using std::vector;
-using std::ifstream;
-using std::ofstream;
-using std::ios_base;
-using std::cout;
-using std::endl;
+#include "XMLLoader.h"
 
 //Struct for save intervals in vector
 struct Interval
@@ -32,25 +17,26 @@ struct Interval
 class XMLWorker
 {
 private:
-	string myXml; //for read xml from file
-	string pathSourceXmlFile;
+	//private members
+	string myXml;
+	XMLLoader load;
 	vector<Interval> myInterval; //Vector with intervals
-	vector<int> lowLocate; //Locate position of low data
-	vector<int> highLocate; //Locate position of high data
 	vector<string> lows; //Vector of lows data
 	vector<string> highs; //Vector of highs data
 	list<int> primeNumbers; //List of primeNumbers
-	int count; // count of intervals
-	static XMLWorker *set_instance;
-	XMLWorker(); //private constructor for a singletone pattern
-	bool checkPrimeNumber(int _number); //checking prime numbers
-	void getIntervals(); 
+	static XMLWorker *instance; //instance for singletone
+
 public:
-	//XMLWorker(string _path);
+	//public methods
 	static XMLWorker *get_instance();
-	void loadXmlFromFile(string _path);
-	void getIntervalsInThread();
+	void getIntervals(); //get intervals
 	void calculatePrimeNumbers();
 	void saveXmlToSourceFile();
 	~XMLWorker();
+
+private:
+	//private methods
+	XMLWorker(); //private constructor for a singletone pattern
+	bool checkPrimeNumber(int _number); //checking prime numbers
+	void parseXmlFile(string _tag, vector<string> &_buffer); //search value by specified tag
 };
