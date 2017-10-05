@@ -2,13 +2,17 @@
 
 XMLLoader::XMLLoader(string _path)
 {
-	setXmlFile(_path);
+	LoadFile(_path);
 }
 
-void XMLLoader::setXmlFile(string _path)
+void XMLLoader::LoadFile(string _path)
 {
 	pathSourceXmlFile = _path;
 	ifstream in(pathSourceXmlFile, ios_base::in);
+	if (!in.is_open())
+	{
+		exit(-3);
+	}
 	xmlFile.assign(
 		(std::istreambuf_iterator<char>(in)),
 		std::istreambuf_iterator<char>()
@@ -16,7 +20,7 @@ void XMLLoader::setXmlFile(string _path)
 	in.close();
 }
 
-string XMLLoader::getXmlFile() const
+string XMLLoader::getContent() const
 {
 	return xmlFile;
 }

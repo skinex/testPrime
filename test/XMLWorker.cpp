@@ -14,8 +14,8 @@ bool XMLWorker::checkPrimeNumber(int _number)
 
 XMLWorker::XMLWorker()
 {
-	load.setXmlFile("scene.xml");
-	myXml = load.getXmlFile();
+	load.LoadFile("scene.xml");
+	myXml = load.getContent();
 }
 
 XMLWorker * XMLWorker::get_instance()
@@ -31,7 +31,7 @@ void XMLWorker::parseXmlFile(string _tag, vector<string>& _buffer)
 {
 	size_t posBegin = 0;
 	size_t posEnd = 0;
-	string openTag = "<" + _tag;
+	string openTag = "<" + _tag + ">";
 	string closeTag = "</" + _tag + ">";
 
 	while (true)
@@ -42,15 +42,6 @@ void XMLWorker::parseXmlFile(string _tag, vector<string>& _buffer)
 			break;
 		}
 		posBegin += openTag.length();
-		posBegin = myXml.find(">", posBegin);
-		
-		if (posBegin == string::npos)
-		{
-			cout << "Close tag not found" << endl;
-			exit(-2);
-		}
-
-		posBegin++;
 		
 		posEnd = myXml.find(closeTag, posBegin); //find close tag in xml file
 		if (posEnd == string::npos)
@@ -60,6 +51,11 @@ void XMLWorker::parseXmlFile(string _tag, vector<string>& _buffer)
 		}
 		string value = myXml.substr(posBegin, posEnd - posBegin); //get value this tag
 		value.erase(remove_if(value.begin(), value.end(), isspace), value.end()); //remove spaces from string
+		if (value.length() == 0)
+		{
+			cout << "empty string" << endl;
+			exit(-4);
+		}
 		_buffer.push_back(value);
 		posBegin = posEnd;
 	}
@@ -105,5 +101,8 @@ void XMLWorker::saveXmlToSourceFile()
 
 XMLWorker::~XMLWorker()
 {
-	delete instance;
+	if (instance != nullptr)
+	{
+		delete instance;
+	}
 }

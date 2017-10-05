@@ -1,7 +1,9 @@
 ﻿  main.cpp
   XMLWorker.cpp
-h:\cpp\testprime\test\test\xmlworker.cpp(72): warning C4018: <: несоответствие типов со знаком и без знака
-h:\cpp\testprime\test\test\xmlworker.cpp(81): warning C4018: <: несоответствие типов со знаком и без знака
+h:\cpp\testprime\test\test\xmlworker.cpp(68): warning C4018: <: несоответствие типов со знаком и без знака
+h:\cpp\testprime\test\test\xmlworker.cpp(77): warning C4018: <: несоответствие типов со знаком и без знака
+  XMLLoader.cpp
   Создание кода...
+  LINK : не найден или не выполнена сборка H:\cpp\testprime\test\Debug\test.exe при последней инкрементной компоновке; выполняется полная компоновка
   test.vcxproj -> H:\cpp\testprime\test\Debug\test.exe
   test.vcxproj -> H:\cpp\testprime\test\Debug\test.pdb (Partial PDB)

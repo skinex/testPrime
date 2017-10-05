@@ -9,8 +9,8 @@ private:
 public:
 	XMLLoader() = default;
 	XMLLoader(string _path);
-	void setXmlFile(string _path);
-	string getXmlFile() const;
+	void LoadFile(string _path);
+	string getContent() const;
 	string getPathSourceXmlFile() const;
 	~XMLLoader() = default;
 };
