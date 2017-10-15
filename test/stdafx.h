@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <thread>
+#include <mutex>
 
 using std::string;
 using std::list;
@@ -15,3 +16,4 @@ using std::ofstream;
 using std::ios_base;
 using std::cout;
 using std::endl;
+using std::mutex;

@@ -14,6 +14,7 @@ bool XMLWorker::checkPrimeNumber(int _number)
 
 XMLWorker::XMLWorker()
 {
+	countIntervals = 0;
 	load.LoadFile("scene.xml");
 	myXml = load.getContent();
 }
@@ -68,28 +69,51 @@ void XMLWorker::getIntervals()
 	for (int i = 0; i < lows.size(); i++)
 	{
 		myInterval.emplace_back(std::stoi(lows[i]), std::stoi(highs[i]));
+		countIntervals++;
 	}
 }
 
 void XMLWorker::calculatePrimeNumbers()
 {
 	//Calculate the prime numbers
-	for (int i = 0; i < lows.size(); i++)
+	for (int i = 0; i < lows.size()-1; i++)
 	{
-		for (int j = myInterval[i].low; j < myInterval[i].high; j++)
+		std::thread t1(&XMLWorker::imThread, this, myInterval[i].low, myInterval[i].high);
+		myThreads.push_back(std::move(t1));
+	}
+
+	for (int i = 0; i < myThreads.size(); i++)
+	{
+		myThreads[i].join();
+	}
+
+	for (int j = myInterval[countIntervals - 1].low; j < myInterval[countIntervals - 1].high; j++)
+	{
+		if (checkPrimeNumber(j))
 		{
-			if (checkPrimeNumber(j))
-			{
-				primeNumbers.push_back(j);
-			}
+			primeNumbers.push_back(j);
+		}
+	}
+}
+
+void XMLWorker::imThread(int low, int high)
+{
+	for (int j = low; j < high; j++)
+	{
+		if (checkPrimeNumber(j))
+		{
+			std::lock_guard<mutex> lock(gImThread);
+			primeNumbers.push_back(j);
 		}
 	}
 }
 
 void XMLWorker::saveXmlToSourceFile()
 {
+	//primeNumbers.sort();
 	ofstream out(load.getPathSourceXmlFile(), ios_base::out | ios_base::trunc);
-	myXml.insert(myXml.length() - 9, "\n <primes>");
+	myXml.insert(myXml.find("</root>"), "<primes> \n");
+	//primeNumbers.sort();
 	for (auto it = primeNumbers.begin(); it != primeNumbers.end(); it++)
 	{
 		myXml.insert(myXml.length() - 9, " " + std::to_string(*it) + " ");

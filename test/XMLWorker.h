@@ -24,14 +24,20 @@ private:
 	vector<string> lows; //Vector of lows data
 	vector<string> highs; //Vector of highs data
 	list<int> primeNumbers; //List of primeNumbers
+	vector<std::thread> myThreads;
 	static XMLWorker *instance; //instance for singletone
+	int countIntervals;
+	mutex gImThread;
+	mutex mMain;
 
 public:
 	//public methods
 	static XMLWorker *get_instance();
 	void getIntervals(); //get intervals
 	void calculatePrimeNumbers();
+	void imThread(int low, int high);
 	void saveXmlToSourceFile();
+	void push(int i);
 	~XMLWorker();
 
 private:
